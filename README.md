@@ -123,7 +123,10 @@ DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up -d --build
 ```
 If you are behind Netskope/SSL inspection, export the Netskope root CA and pass it during build:
 ```
-export NETSKOPE_CA_B64="$(base64 -b 0 /path/to/netskope-ca.pem)"
+# On Linux (GNU base64):
+export NETSKOPE_CA_B64="$(base64 -w 0 /path/to/netskope-ca.pem)"
+# On macOS (BSD base64), omit the flag:
+# export NETSKOPE_CA_B64="$(base64 /path/to/netskope-ca.pem)"
 docker compose up -d --build
 ```
 If you must bypass cert verification (less secure), use trusted hosts for pip:
@@ -137,6 +140,7 @@ docker compose up -d --build
 docker compose exec mongo mongo mydb --eval 'db.createCollection("storypoint")'
 docker compose exec mongo bash -lc 'for entry in /dataset/*.csv; do mongoimport -d mydb -c storypoint --type CSV --file "$entry" --headerline; done'
 ```
+(Docker replaces the `importCSV.sh` script for containerized environments)
 
 3. Run preprocessing and training inside the container
 ```
