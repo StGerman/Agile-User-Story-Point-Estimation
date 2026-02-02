@@ -1,0 +1,31 @@
+services:
+  app:
+    platform: linux/amd64
+    build:
+      context: .
+      args:
+        NETSKOPE_CA_B64: ${NETSKOPE_CA_B64-}
+        PIP_TRUSTED_HOSTS: ${PIP_TRUSTED_HOSTS-}
+    working_dir: /app
+    volumes:
+      - .:/app
+      - nltk_data:/usr/local/share/nltk_data
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DB: mydb
+    depends_on:
+      - mongo
+    command: sleep infinity
+
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./dataset:/dataset:ro
+
+volumes:
+  mongo_data:
+  nltk_data:

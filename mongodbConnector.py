@@ -6,7 +6,7 @@ Created on Fri Oct 19 10:38:43 2018
 @author: bking
 """
 
-
+import os
 from pymongo import MongoClient
 import pandas as pd
 #import tensorflow as tf
@@ -15,10 +15,11 @@ import pandas as pd
 # Connect to MondoDB and retrieve the data
 class MongodbConnector():
     
-    def __init__(self, host='localhost', port=27017,dbname="mydb"):
-        self.host  = host
-        self.port  = port
-        self.client = MongoClient(host, port)
+    def __init__(self, host=None, port=None, dbname=None):
+        self.host = host or os.getenv("MONGO_HOST", "localhost")
+        self.port = int(port or os.getenv("MONGO_PORT", "27017"))
+        dbname = dbname or os.getenv("MONGO_DB", "mydb")
+        self.client = MongoClient(self.host, self.port)
         self.db = self.client[dbname]
     
     def setCollection(self,collectionName):

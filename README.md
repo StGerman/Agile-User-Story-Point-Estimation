@@ -111,6 +111,44 @@ __LSTM architecture__
 ## Improvements
 
 ## How To Run
+### Docker (recommended)
+1. Build and start services
+```
+docker compose up -d --build
+```
+If build fails on Apple Silicon, set the platform:
+```
+DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up -d --build
+```
+If you are behind Netskope/SSL inspection, export the Netskope root CA and pass it during build:
+```
+export NETSKOPE_CA_B64="$(base64 -b 0 /path/to/netskope-ca.pem)"
+docker compose up -d --build
+```
+If you must bypass cert verification (less secure), use trusted hosts for pip:
+```
+export PIP_TRUSTED_HOSTS="pypi.org pypi.python.org files.pythonhosted.org"
+docker compose up -d --build
+```
+
+2. Import CSVs into MongoDB (expects ./dataset/*.csv)
+```
+docker compose exec mongo mongo mydb --eval 'db.createCollection("storypoint")'
+docker compose exec mongo bash -lc 'for entry in /dataset/*.csv; do mongoimport -d mydb -c storypoint --type CSV --file "$entry" --headerline; done'
+```
+
+3. Run preprocessing and training inside the container
+```
+docker compose exec app python preprocessing.py
+docker compose exec app python Word2VecFeature.py --proc 8
+docker compose exec app python Doc2VecFeature.py --proc 8
+docker compose exec app python RandomForest.py --size 100 --feature_name word2vec_ave
+docker compose exec app python lightGBM.py --size 100 --feature_name word2vec_ave
+docker compose exec app python catb.py --size 100 --feature_name word2vec_ave
+docker compose exec app python LSTM_regression.py --rnn_layers 2 --rnn_units 100 --embedding_size 100
+```
+
+### Local
 1. MongoDB
 - Create database and collections in MongoDB (no password)
 ```
