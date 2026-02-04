@@ -29,17 +29,14 @@ class MongodbConnector():
         return self.collection
      
     def findProject(self,projectName):
-        queryString = "^"+projectName
-        return self.collection.find({'issuekey':{"$regex":queryString}})
+        return self.collection.find({'project': projectName})
     
     def getUnique(self,key):
         return self.collection.find().distinct(key)
     
     def getUniqueProject(self):
-        projectName = self.getUnique("issuekey")
-        projectName_ = [i.split("-")[0] for i in projectName]
-        projectName_set = set(projectName_)
-        return projectName_set
+        projectName = self.getUnique("project")
+        return set(projectName)
     
 #    def getData(self,projectName):
 #        project = self.findProject(projectName)
@@ -59,8 +56,8 @@ class MongodbConnector():
             for document in self.findProject(project):
                 name = project
                 title = document["title"]
-                description = document['description']
-                storypoint = document['storypoint']
+                description = document['user_story']
+                storypoint = document['point']
                 record.append([name,title,description,storypoint])
         return record
 

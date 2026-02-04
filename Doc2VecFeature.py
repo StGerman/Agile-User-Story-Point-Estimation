@@ -30,7 +30,7 @@ def list2str(row):
     return out_str
 
 def Doc2VecFeature(embedding_size = 200):
-    corpus = pd.read_hdf('helper/corpus_hdf', key='abc', mode='r')
+    corpus = pd.read_pickle('helper/corpus.pickle')
     corpus['concat'] = corpus['concat'].apply(lambda x: list2str(x))
     
     #Drop project columns

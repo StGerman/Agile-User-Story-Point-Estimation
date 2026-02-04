@@ -24,7 +24,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-      - ./dataset:/dataset:ro
+      - ./data_csv:/data_csv:ro
 
 volumes:
   mongo_data:

@@ -125,7 +125,7 @@ if __name__ == "__main__":
         lmtzr = pickle.load(f)
     
     # Concatinate title and user_story
-    pd_data['concat'] = pd_data.apply(lambda x: x[1] + ". " + x[2],axis=1)
+    pd_data['concat'] = pd_data['title'] + ". " + pd_data['user_story']
     
     corpus = pd_data['concat']
     # Save CSV file for later use
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     corpus['project'] = pd_data['project']
     
     # Convert to     
-    corpus.to_hdf('helper/corpus_hdf',key='abc')
+    corpus.to_pickle('helper/corpus.pickle')
     
     
     
