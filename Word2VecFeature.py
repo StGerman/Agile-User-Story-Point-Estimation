@@ -26,7 +26,7 @@ print("=========================================================================
 def Word2VecFeature(embedding_size = 200):
 
 
-    corpus = pd.read_hdf('helper/corpus_hdf', key='abc', mode='r')
+    corpus = pd.read_pickle('helper/corpus.pickle')
     
     #corpus = corpus['concat']
 #    window_size = 3
